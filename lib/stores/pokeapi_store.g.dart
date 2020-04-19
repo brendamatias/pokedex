@@ -55,6 +55,23 @@ mixin _$PokeApiStore on _PokeApiStoreBase, Store {
     }, _$_currentPokemonAtom, name: '${_$_currentPokemonAtom.name}_set');
   }
 
+  final _$colorPokemonAtom = Atom(name: '_PokeApiStoreBase.colorPokemon');
+
+  @override
+  Color get colorPokemon {
+    _$colorPokemonAtom.context.enforceReadPolicy(_$colorPokemonAtom);
+    _$colorPokemonAtom.reportObserved();
+    return super.colorPokemon;
+  }
+
+  @override
+  set colorPokemon(Color value) {
+    _$colorPokemonAtom.context.conditionallyRunInAction(() {
+      super.colorPokemon = value;
+      _$colorPokemonAtom.reportChanged();
+    }, _$colorPokemonAtom, name: '${_$colorPokemonAtom.name}_set');
+  }
+
   final _$_PokeApiStoreBaseActionController =
       ActionController(name: '_PokeApiStoreBase');
 
@@ -63,16 +80,6 @@ mixin _$PokeApiStore on _PokeApiStoreBase, Store {
     final _$actionInfo = _$_PokeApiStoreBaseActionController.startAction();
     try {
       return super.fetchPokemonList();
-    } finally {
-      _$_PokeApiStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  dynamic getPokemon({int index}) {
-    final _$actionInfo = _$_PokeApiStoreBaseActionController.startAction();
-    try {
-      return super.getPokemon(index: index);
     } finally {
       _$_PokeApiStoreBaseActionController.endAction(_$actionInfo);
     }
@@ -101,7 +108,7 @@ mixin _$PokeApiStore on _PokeApiStoreBase, Store {
   @override
   String toString() {
     final string =
-        'pokeAPI: ${pokeAPI.toString()},currentPokemon: ${currentPokemon.toString()}';
+        'colorPokemon: ${colorPokemon.toString()},pokeAPI: ${pokeAPI.toString()},currentPokemon: ${currentPokemon.toString()}';
     return '{$string}';
   }
 }
