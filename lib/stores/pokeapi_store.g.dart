@@ -14,6 +14,12 @@ mixin _$PokeApiStore on _PokeApiStoreBase, Store {
   @override
   PokeAPI get pokeAPI =>
       (_$pokeAPIComputed ??= Computed<PokeAPI>(() => super.pokeAPI)).value;
+  Computed<Pokemon> _$currentPokemonComputed;
+
+  @override
+  Pokemon get currentPokemon => (_$currentPokemonComputed ??=
+          Computed<Pokemon>(() => super.currentPokemon))
+      .value;
 
   final _$_pokeAPIAtom = Atom(name: '_PokeApiStoreBase._pokeAPI');
 
@@ -30,6 +36,23 @@ mixin _$PokeApiStore on _PokeApiStoreBase, Store {
       super._pokeAPI = value;
       _$_pokeAPIAtom.reportChanged();
     }, _$_pokeAPIAtom, name: '${_$_pokeAPIAtom.name}_set');
+  }
+
+  final _$_currentPokemonAtom = Atom(name: '_PokeApiStoreBase._currentPokemon');
+
+  @override
+  Pokemon get _currentPokemon {
+    _$_currentPokemonAtom.context.enforceReadPolicy(_$_currentPokemonAtom);
+    _$_currentPokemonAtom.reportObserved();
+    return super._currentPokemon;
+  }
+
+  @override
+  set _currentPokemon(Pokemon value) {
+    _$_currentPokemonAtom.context.conditionallyRunInAction(() {
+      super._currentPokemon = value;
+      _$_currentPokemonAtom.reportChanged();
+    }, _$_currentPokemonAtom, name: '${_$_currentPokemonAtom.name}_set');
   }
 
   final _$_PokeApiStoreBaseActionController =
@@ -56,6 +79,16 @@ mixin _$PokeApiStore on _PokeApiStoreBase, Store {
   }
 
   @override
+  dynamic setCurrentPokemon({int index}) {
+    final _$actionInfo = _$_PokeApiStoreBaseActionController.startAction();
+    try {
+      return super.setCurrentPokemon(index: index);
+    } finally {
+      _$_PokeApiStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   Widget getImage({String number}) {
     final _$actionInfo = _$_PokeApiStoreBaseActionController.startAction();
     try {
@@ -67,7 +100,8 @@ mixin _$PokeApiStore on _PokeApiStoreBase, Store {
 
   @override
   String toString() {
-    final string = 'pokeAPI: ${pokeAPI.toString()}';
+    final string =
+        'pokeAPI: ${pokeAPI.toString()},currentPokemon: ${currentPokemon.toString()}';
     return '{$string}';
   }
 }
