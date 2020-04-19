@@ -72,6 +72,23 @@ mixin _$PokeApiStore on _PokeApiStoreBase, Store {
     }, _$colorPokemonAtom, name: '${_$colorPokemonAtom.name}_set');
   }
 
+  final _$currentPositionAtom = Atom(name: '_PokeApiStoreBase.currentPosition');
+
+  @override
+  int get currentPosition {
+    _$currentPositionAtom.context.enforceReadPolicy(_$currentPositionAtom);
+    _$currentPositionAtom.reportObserved();
+    return super.currentPosition;
+  }
+
+  @override
+  set currentPosition(int value) {
+    _$currentPositionAtom.context.conditionallyRunInAction(() {
+      super.currentPosition = value;
+      _$currentPositionAtom.reportChanged();
+    }, _$currentPositionAtom, name: '${_$currentPositionAtom.name}_set');
+  }
+
   final _$_PokeApiStoreBaseActionController =
       ActionController(name: '_PokeApiStoreBase');
 
@@ -108,7 +125,7 @@ mixin _$PokeApiStore on _PokeApiStoreBase, Store {
   @override
   String toString() {
     final string =
-        'colorPokemon: ${colorPokemon.toString()},pokeAPI: ${pokeAPI.toString()},currentPokemon: ${currentPokemon.toString()}';
+        'colorPokemon: ${colorPokemon.toString()},currentPosition: ${currentPosition.toString()},pokeAPI: ${pokeAPI.toString()},currentPokemon: ${currentPokemon.toString()}';
     return '{$string}';
   }
 }

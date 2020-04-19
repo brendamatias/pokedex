@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pokedex/consts/consts_api.dart';
+import 'package:pokedex/consts/consts_app.dart';
 import 'package:pokedex/models/pokeapi.dart';
 import 'package:pokedex/stores/pokeapi_store.dart';
+import 'package:simple_animations/simple_animations/controlled_animation.dart';
+import 'package:simple_animations/simple_animations/multi_track_tween.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 
 class PokeDetailsPage extends StatefulWidget {
@@ -20,6 +23,7 @@ class _PokeDetailsPageState extends State<PokeDetailsPage> {
   PageController _pageController;
   Pokemon _pokemon;
   PokeApiStore _pokemonStore;
+  MultiTrackTween _animation;
 
   @override
   void initState() {
@@ -27,6 +31,11 @@ class _PokeDetailsPageState extends State<PokeDetailsPage> {
     _pageController = PageController(initialPage: widget.index);
     _pokemonStore = GetIt.instance<PokeApiStore>();
     _pokemon = _pokemonStore.currentPokemon;
+
+    _animation = MultiTrackTween([
+      Track("rotation").add(Duration(seconds: 5), Tween(begin: 0.0, end: 6.0),
+          curve: Curves.linear)
+    ]);
   }
 
   @override
@@ -75,7 +84,7 @@ class _PokeDetailsPageState extends State<PokeDetailsPage> {
           Container(height: MediaQuery.of(context).size.height / 3),
           SlidingSheet(
             elevation: 0,
-            cornerRadius: 16,
+            cornerRadius: 30,
             snapSpec: const SnapSpec(
               snap: true,
               snappings: [0.7, 1.0],
@@ -89,27 +98,66 @@ class _PokeDetailsPageState extends State<PokeDetailsPage> {
           ),
           Padding(
             child: SizedBox(
-                height: 150,
+                height: 240,
                 child: PageView.builder(
                   controller: _pageController,
                   onPageChanged: (index) {
                     _pokemonStore.setCurrentPokemon(index: index);
                   },
                   itemCount: _pokemonStore.pokeAPI.pokemon.length,
-                  itemBuilder: (BuildContext context, int count) {
-                    Pokemon _pokeitem = _pokemonStore.getPokemon(index: count);
-                    return CachedNetworkImage(
-                      height: 60,
-                      width: 60,
-                      placeholder: (context, url) => new Container(
-                        color: Colors.transparent,
-                      ),
-                      imageUrl:
-                          'https://raw.githubusercontent.com/fanzeyi/pokemon.json/master/images/${_pokeitem.num}.png',
+                  itemBuilder: (BuildContext context, int index) {
+                    Pokemon _pokeitem = _pokemonStore.getPokemon(index: index);
+                    return Stack(
+                      alignment: Alignment.center,
+                      children: <Widget>[
+                        ControlledAnimation(
+                          playback: Playback.LOOP,
+                          duration: _animation.duration,
+                          tween: _animation,
+                          builder: (context, animation) {
+                            return Transform.rotate(
+                              child: Hero(
+                                child: Opacity(
+                                  child: Image.asset(
+                                    ConstsApp.whitePokeball,
+                                    height: 240,
+                                    width: 240,
+                                  ),
+                                  opacity: 0.2,
+                                ),
+                                tag: index.toString(),
+                              ),
+                              angle: animation['rotation'],
+                            );
+                          },
+                        ),
+                        Observer(builder: (context) {
+                          return AnimatedPadding(
+                            child: CachedNetworkImage(
+                              height: 200,
+                              width: 200,
+                              placeholder: (context, url) => new Container(
+                                color: Colors.transparent,
+                              ),
+                              color: index == _pokemonStore.currentPosition
+                                  ? null
+                                  : Colors.black.withOpacity(0.5),
+                              imageUrl:
+                                  'https://raw.githubusercontent.com/fanzeyi/pokemon.json/master/images/${_pokeitem.num}.png',
+                            ),
+                            duration: Duration(milliseconds: 400),
+                            curve: Curves.bounceInOut,
+                            padding: EdgeInsets.all(
+                                index == _pokemonStore.currentPosition
+                                    ? 0
+                                    : 60),
+                          );
+                        }),
+                      ],
                     );
                   },
                 )),
-            padding: EdgeInsets.only(top: 50),
+            padding: EdgeInsets.only(top: 60),
           )
         ],
       ),
