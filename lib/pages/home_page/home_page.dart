@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> {
         overflow: Overflow.visible,
         children: <Widget>[
           Positioned(
-            top: -(240 / 4.6),
+            top: MediaQuery.of(context).padding.top - (240 / 3),
             left: screenWidth - (240 / 1.6),
             child: Opacity(
               child: Image.asset(

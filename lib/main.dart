@@ -17,6 +17,8 @@ class MyApp extends StatelessWidget {
       title: 'Pokedex',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        fontFamily: 'Google',
+        brightness: Brightness.light,
       ),
       home: HomePage(),
     );
