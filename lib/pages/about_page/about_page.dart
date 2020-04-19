@@ -3,6 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:md2_tab_indicator/md2_tab_indicator.dart';
 import 'package:pokedex/pages/about_page/widgets/tab_about.dart';
+import 'package:pokedex/pages/about_page/widgets/tab_evolution.dart';
 import 'package:pokedex/stores/pokeapi_store.dart';
 import 'package:pokedex/stores/pokeapiv2_store.dart';
 
@@ -79,6 +80,7 @@ class _AboutPageState extends State<AboutPage>
         controller: _pageController,
         children: <Widget>[
           TabAbout(),
+          TabEvolution(),
           Container(
             color: Colors.blue,
           ),
