@@ -115,7 +115,14 @@ class PokeItem extends StatelessWidget {
           ),
         ),
         decoration: BoxDecoration(
-          color: ConstsAPI.getColorType(type: types[0]),
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              ConstsApp.getColorType(type: types[0]).withOpacity(0.7),
+              ConstsApp.getColorType(type: types[0])
+            ],
+          ),
           borderRadius: BorderRadius.all(
             Radius.circular(20),
           ),
